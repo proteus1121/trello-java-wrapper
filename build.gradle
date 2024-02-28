@@ -7,6 +7,7 @@ plugins {
 }
 
 group = 'io.github.proteus1121'
+version = System.getenv("VERSION")
 
 description = """Trello Java Wrapper"""
 
@@ -74,7 +75,6 @@ task generatePom {
         pom {
             project {
                 name 'Trello Java API'
-                version System.getenv("VERSION")
                 licenses {
                     license {
                         name 'The Apache Software License, Version 2.0'
@@ -198,9 +198,9 @@ sonatypeCentralUpload {
     password = System.getenv("SONATYPE_PASSWORD")
 
     archives = files(
-            "build/libs/trello-java-wrapper.jar",
-            "build/libs/trello-java-wrapper-javadoc.jar",
-            "build/libs/trello-java-wrapper-sources.jar")
+            "build/libs/trello-java-wrapper-" + System.getenv("VERSION") + ".jar",
+            "build/libs/trello-java-wrapper-" + System.getenv("VERSION") + "-javadoc.jar",
+            "build/libs/trello-java-wrapper-" + System.getenv("VERSION") + "-sources.jar")
     pom = file("pom.xml")
 
     publicKey = System.getenv("PUBLIC_KEY")
