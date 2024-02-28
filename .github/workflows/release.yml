@@ -55,4 +55,4 @@ jobs:
           PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-          VERSION: {{ steps.semantic.outputs.VERSION }}
+          VERSION: ${{ steps.semantic.outputs.VERSION }}
