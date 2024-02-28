@@ -4,6 +4,14 @@ on:
   push:
     branches:
       - master
+permissions:
+  contents: write
+  packages: write
+  issues: write
+  pull-requests: write
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build:
@@ -26,7 +34,8 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: 18
+          cache: 'npm'
 
       - name: Install npm dependencies
         run: npm install -g semantic-release@19 @semantic-release/git @semantic-release/changelog @semantic-release/exec -D
