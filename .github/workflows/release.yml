@@ -44,6 +44,8 @@ jobs:
       - name: Build with Gradle
         # Disable tests while integration tests are failing
         run: ./gradlew build -x test
+        env:
+          VERSION: ${{ steps.semantic.outputs.VERSION }}
 
       - name: Publish with Gradle
         run: |
