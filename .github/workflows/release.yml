@@ -40,9 +40,10 @@ jobs:
         run: npm install -g semantic-release@19 @semantic-release/git @semantic-release/changelog @semantic-release/exec -D
 
       - name: Semantic release
+        id: semantic
         run: |
           npx semantic-release;
-          export VERSION="$(git describe --tags $(git rev-list --tags --max-count=1))";
+          echo "VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
 
       - name: Publish with Gradle
         run: |
@@ -54,3 +55,4 @@ jobs:
           PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          VERSION: {{ steps.semantic.outputs.VERSION }}
