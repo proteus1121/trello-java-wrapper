@@ -1,18 +1,18 @@
-apply plugin: 'scala' // it extends Java plugin, so you don't need to apply that one separately
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
+plugins {
+    id 'cl.franciscosolis.sonatype-central-upload' version '1.0.2'
+    id 'maven'
+    id 'maven-publish'
+    id 'signing'
+    id 'java'
+}
 
-group = 'com.taskadapter'
-version = '0.14'
+group = 'io.github.proteus1121'
 
 description = """Trello Java Wrapper"""
 
 // java sources are added to Scala compile phase and removed from Java compile.
 // this solution is fix java->scala dependency issue
 // see  https://discuss.gradle.org/t/how-to-compile-a-java-class-that-depends-on-a-scala-class-in-gradle/6747
-sourceSets.test.scala.srcDir "src/test/java"
-sourceSets.test.java.srcDirs = []
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -68,6 +68,44 @@ dependencies {
     )
 }
 
+task generatePom {
+    doLast {
+        def pomFile = file('pom.xml')
+        pom {
+            project {
+                name 'Trello Java API'
+                version System.getenv("VERSION")
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+                url 'https://github.com/proteus1121/trello-java-wrapper'
+                description 'Java API for Trello'
+                developers {
+                    developer {
+                        name 'Alexey Skorokhodov'
+                        email 'alskor@gmail.com'
+                    }
+                }
+                scm {
+                    connection 'scm:git:git://github.com/proteus1121/trello-java-wrapper.git'
+                    tag 'HEAD'
+                    // A publicly browsable repository. For example, via ViewCVS
+                    url 'http://github.com/proteus1121/trello-java-wrapper/tree/master/'
+                }
+
+                issueManagement {
+                    system 'github'
+                    url 'http://github.com/proteus1121/trello-java-wrapper/issues'
+                }
+            }
+        }.writeTo(pomFile)
+    }
+}
+
 task packageSources(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
@@ -80,7 +118,7 @@ task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
 // turn off strict Javadoc checks in Java8 that break the build.
 // http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html
 // minor Javadoc issues are not important enough to justify breaking the build.
-// adding Captain-Obvious-style garbage javadoc for params just to satisfy this build check is not useful. 
+// adding Captain-Obvious-style garbage javadoc for params just to satisfy this build check is not useful.
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
         tasks.withType(Javadoc) {
@@ -127,28 +165,47 @@ uploadArchives {
                         distribution 'repo'
                     }
                 }
-                url 'https://github.com/taskadapter/trello-java-wrapper'
+                url 'https://github.com/proteus1121/trello-java-wrapper'
                 description 'Java API for Trello'
                 developers {
                     developer {
                         name 'Alexey Skorokhodov'
                         email 'alskor@gmail.com'
                     }
+                    developer {
+                        name 'Artem Ishchenko'
+                        email 'artem.ischchenko@gmail.com'
+                    }
                 }
                 scm {
-                    connection 'scm:git:git://github.com/taskadapter/trello-java-wrapper.git'
+                    connection 'scm:git:git://github.com/proteus1121/trello-java-wrapper.git'
                     tag 'HEAD'
                     // A publicly browsable repository. For example, via ViewCVS
-                    url 'http://github.com/taskadapter/trello-java-wrapper/tree/master/'
+                    url 'http://github.com/proteus1121/trello-java-wrapper/tree/master/'
                 }
 
                 issueManagement {
                     system 'github'
-                    url 'http://github.com/taskadapter/trello-java-wrapper/issues'
+                    url 'http://github.com/proteus1121/trello-java-wrapper/issues'
                 }
             }
         }
     }
+}
+
+sonatypeCentralUpload {
+    username = System.getenv("SONATYPE_USERNAME")
+    password = System.getenv("SONATYPE_PASSWORD")
+
+    archives = files(
+            "build/libs/trello-java-wrapper.jar",
+            "build/libs/trello-java-wrapper-javadoc.jar",
+            "build/libs/trello-java-wrapper-sources.jar")
+    pom = file("pom.xml")
+
+    publicKey = System.getenv("PUBLIC_KEY")
+    signingKeyPassphrase = System.getenv("SIGNING_KEY_PASSWORD")
+    signingKey = System.getenv("PRIVATE_KEY")
 }
 
 // this section is used by "install" command to publish to local Maven repo

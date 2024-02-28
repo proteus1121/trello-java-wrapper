@@ -1,0 +1,13 @@
+{
+  "branches": ["master"],
+  "repositoryUrl": "https://github.com/proteus1121/trello-java-wrapper.git",
+  "tagFormat": "${version}",
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/git",
+    [
+      "@semantic-release/github"
+    ]
+  ]
+}
