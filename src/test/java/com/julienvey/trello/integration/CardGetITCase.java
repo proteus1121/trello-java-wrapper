@@ -2,16 +2,10 @@ package com.julienvey.trello.integration;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import com.julienvey.trello.domain.Label;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import com.julienvey.trello.TrelloConfig;
-import com.julienvey.trello.impl.http.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -28,6 +22,7 @@ import com.julienvey.trello.impl.TrelloImpl;
 @RunWith(Parameterized.class)
 public class CardGetITCase {
 
+    private static TrelloConfig CONFIG = new TrelloConfig();
     public static final String CARD_ID = "518bab520967804c03002994";
 
     private Trello trello;
@@ -45,7 +40,7 @@ public class CardGetITCase {
 
     @Before
     public void setUp() {
-        trello = new TrelloImpl(TrelloConfig.applicationKey(), "", httpClient);
+        trello = new TrelloImpl(CONFIG.getApplicationKey(), "", httpClient);
     }
 
     @Test
