@@ -442,7 +442,7 @@ public class TrelloImpl implements Trello {
 
     @Override
     public void createCheckItem(String checkListId, CheckItem checkItem) {
-        postForLocation(createUrl(ADD_CHECKITEMS_TO_CHECKLIST).asString(), checkItem, checkListId);
+        postForObject(createUrl(ADD_CHECKITEMS_TO_CHECKLIST).asString(), checkItem, Void.class, checkListId);
     }
 
     public CheckItem completeCheckItem(String cardId, String checkItemId) {
